@@ -76,7 +76,7 @@ class FullDetails extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(right: 50),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green),
+                    border: Border.all(color: Colors.deepPurple),
                   ),
                   child: Text(
                     "Full Name: $name",
@@ -91,7 +91,7 @@ class FullDetails extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(right: 50),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green),
+                    border: Border.all(color: Colors.deepPurple),
                   ),
                   child: Text(
                     "Age: $age",
@@ -106,7 +106,7 @@ class FullDetails extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(right: 50),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green),
+                    border: Border.all(color: Colors.deepPurple),
                   ),
                   child: Text(
                     "Phone Number: $phone",
@@ -121,7 +121,7 @@ class FullDetails extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(right: 50),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green),
+                    border: Border.all(color: Colors.deepPurple),
                   ),
                   child: Text(
                     "Domain: $domain",

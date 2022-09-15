@@ -29,17 +29,20 @@ class ScreenHome extends StatelessWidget {
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton.extended(
-          icon: const Icon(Icons.add),
-          backgroundColor: Colors.green,
-          label: const Text('Add new Student'),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const AddStudent(),
-              ),
-            );
-          },
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(15),
+          child: FloatingActionButton.extended(
+            icon: const Icon(Icons.add),
+            backgroundColor: Colors.deepPurple,
+            label: const Text('Add new Student'),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AddStudent(),
+                ),
+              );
+            },
+          ),
         ),
         body: const Padding(
           padding: EdgeInsets.only(top: 10),

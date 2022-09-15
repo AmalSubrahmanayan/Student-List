@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
 
+
 class AddStudent extends StatefulWidget {
   const AddStudent({Key? key}) : super(key: key);
 
