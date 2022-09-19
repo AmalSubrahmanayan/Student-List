@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
 
 class EditStudent extends StatefulWidget {
@@ -173,7 +172,7 @@ class _EditStudentState extends State<EditStudent> {
       domain: _domainNameController.text,
       photo: widget.image,
     );
-    editList(widget.index, studentmodel);
+    // editList(widget.index, studentmodel);
     Navigator.of(context).pop();
   }
 

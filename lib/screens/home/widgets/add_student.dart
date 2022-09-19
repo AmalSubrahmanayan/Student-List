@@ -2,18 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
+import 'package:student_db/provider/provider_image.dart';
+import 'package:student_db/screens/home/screen_home.dart';
 
+class AddStudent extends StatelessWidget {
+  AddStudent({Key? key}) : super(key: key);
 
-class AddStudent extends StatefulWidget {
-  const AddStudent({Key? key}) : super(key: key);
-
-  @override
-  State<AddStudent> createState() => _AddStudentState();
-}
-
-class _AddStudentState extends State<AddStudent> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -39,51 +36,62 @@ class _AddStudentState extends State<AddStudent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                      ),
-                      child: _photo?.path == null
-                          ? const CircleAvatar(
-                              backgroundColor: Colors.black38,
-                              radius: 60,
-                              child: Icon(Icons.image),
-                            )
-                          : CircleAvatar(
-                              backgroundImage: FileImage(
-                                File(_photo!.path),
-                              ),
-                              radius: 60,
-                            ),
-                    ),
+                  Consumer<ProviderImage>(
+                    builder: (BuildContext context, value, Widget? child) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 20,
+                          ),
+                          child: value.img == null
+                              ? const CircleAvatar(
+                                  backgroundColor: Colors.black38,
+                                  radius: 60,
+                                  child: Icon(Icons.image),
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: FileImage(
+                                    File(value.img!.path),
+                                  ),
+                                  radius: 60,
+                                ),
+                        ),
+                      );
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          getPhoto();
+                          Provider.of<ProviderImage>(context, listen: false)
+                              .getPhoto();
                         },
                         icon: const Icon(Icons.image_outlined),
                         label: const Text('Add An Image'),
                       ),
                     ],
                   ),
-                  TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Full Name',
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white),
+                    child: TextFormField(
+                      textCapitalization: TextCapitalization.words,
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        hintText: 'Full Name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Enter Full Name';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter Full Name';
-                      } else {
-                        return null;
-                      }
-                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -91,8 +99,11 @@ class _AddStudentState extends State<AddStudent> {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _ageController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), hintText: 'Age'),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      hintText: 'Age',
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Enter your Age ';
@@ -107,8 +118,11 @@ class _AddStudentState extends State<AddStudent> {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _phoneNumberController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), hintText: 'Phone Number'),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      hintText: 'Phone Number',
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Enter Phone Number';
@@ -125,8 +139,11 @@ class _AddStudentState extends State<AddStudent> {
                   TextFormField(
                     textCapitalization: TextCapitalization.words,
                     controller: _domainNameController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), hintText: 'Domain Name'),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      hintText: 'Domain Name',
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Enter Domain Name ';
@@ -136,11 +153,19 @@ class _AddStudentState extends State<AddStudent> {
                     },
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate() && _photo != null) {
-                        onAddStudentButtonClicked();
-                        Navigator.of(context).pop();
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate() &&
+                          Provider.of<ProviderImage>(context, listen: false)
+                                  .img !=
+                              null) {
+                        print('g');
+                        await onAddStudentButtonClicked(context);
+                        Provider.of<DbFunctionProvider>(context, listen: false)
+                            .getAllStudents();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ScreenHome()));
                       } else {
+                        print('e');
                         imageAlert = true;
                       }
                     },
@@ -156,7 +181,7 @@ class _AddStudentState extends State<AddStudent> {
     );
   }
 
-  Future<void> onAddStudentButtonClicked() async {
+  Future<void> onAddStudentButtonClicked(context) async {
     final name = _nameController.text.trim();
     final age = _ageController.text.trim();
     final phone = _phoneNumberController.text.trim();
@@ -166,7 +191,7 @@ class _AddStudentState extends State<AddStudent> {
         age.isEmpty ||
         phone.isEmpty ||
         domain.isEmpty ||
-        _photo!.path.isEmpty) {
+        Provider.of<ProviderImage>(context, listen: false).img!.path.isEmpty) {
       return;
     }
 
@@ -175,22 +200,19 @@ class _AddStudentState extends State<AddStudent> {
         age: age,
         phone: phone,
         domain: domain,
-        photo: _photo!.path);
-    addStudent(student);
+        photo: Provider.of<ProviderImage>(context, listen: false).img!.path);
+    Provider.of<DbFunctionProvider>(context, listen: false).addStudent(student);
   }
 
   File? _photo;
   Future<void> getPhoto() async {
-    final photo = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (photo == null) {
+    final pic = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pic == null) {
       return;
     } else {
-      final photoTemp = File(photo.path);
-      setState(
-        () {
-          _photo = photoTemp;
-        },
-      );
+      final photoTemp = File(pic.path);
+
+      _photo = photoTemp;
     }
   }
 }
