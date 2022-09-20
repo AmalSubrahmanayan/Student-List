@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,21 +7,24 @@ import 'package:provider/provider.dart';
 import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
 import 'package:student_db/provider/provider_image.dart';
-import 'package:student_db/screens/home/screen_home.dart';
+import 'package:student_db/provider/provider_search.dart';
+// import 'package:student_db/screens/home/screen_home.dart';
 
 class AddStudent extends StatelessWidget {
-  AddStudent({Key? key}) : super(key: key);
+  AddStudent({
+    Key? key,
+  }) : super(key: key);
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _domainNameController = TextEditingController();
   bool imageAlert = false;
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProviderImage>(context,listen: false).img==null;
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -162,8 +166,6 @@ class AddStudent extends StatelessWidget {
                         await onAddStudentButtonClicked(context);
                         Provider.of<DbFunctionProvider>(context, listen: false)
                             .getAllStudents();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ScreenHome()));
                       } else {
                         print('e');
                         imageAlert = true;
@@ -196,15 +198,21 @@ class AddStudent extends StatelessWidget {
     }
 
     final student = StudentModel(
-        name: name,
-        age: age,
-        phone: phone,
-        domain: domain,
-        photo: Provider.of<ProviderImage>(context, listen: false).img!.path);
+      name: name,
+      age: age,
+      phone: phone,
+      domain: domain,
+      photo: Provider.of<ProviderImage>(context, listen: false).img!.path,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+    );
     Provider.of<DbFunctionProvider>(context, listen: false).addStudent(student);
+
+    Navigator.of(context).pop();
+    Provider.of<ProviderSearch>(context, listen: false).getAllStudents();
+    log('ook');
   }
 
-  File? _photo;
+  File? photo;
   Future<void> getPhoto() async {
     final pic = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pic == null) {
@@ -212,7 +220,7 @@ class AddStudent extends StatelessWidget {
     } else {
       final photoTemp = File(pic.path);
 
-      _photo = photoTemp;
+      photo = photoTemp;
     }
   }
 }

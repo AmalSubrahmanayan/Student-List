@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
+import 'package:student_db/provider/provider_search.dart';
 
-class EditStudent extends StatefulWidget {
+class EditStudent extends StatelessWidget {
   EditStudent(
       {Key? key,
       required this.name,
@@ -12,7 +15,8 @@ class EditStudent extends StatefulWidget {
       required this.phone,
       required this.domain,
       required this.image,
-      required this.index})
+      required this.index,
+      required this.id})
       : super(key: key);
 
   final String name;
@@ -21,12 +25,8 @@ class EditStudent extends StatefulWidget {
   final String domain;
   String image;
   final int index;
+  final String id;
 
-  @override
-  State<EditStudent> createState() => _EditStudentState();
-}
-
-class _EditStudentState extends State<EditStudent> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
@@ -35,15 +35,11 @@ class _EditStudentState extends State<EditStudent> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    _nameController = TextEditingController(text: widget.name);
-    _ageController = TextEditingController(text: widget.age);
-    _phoneNumberController = TextEditingController(text: widget.phone);
-    _domainNameController = TextEditingController(text: widget.domain);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _nameController = TextEditingController(text: name);
+    _ageController = TextEditingController(text: age);
+    _phoneNumberController = TextEditingController(text: phone);
+    _domainNameController = TextEditingController(text: domain);
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -62,7 +58,7 @@ class _EditStudentState extends State<EditStudent> {
                       ),
                       child: CircleAvatar(
                         backgroundImage: FileImage(
-                          File(widget.image),
+                          File(image),
                         ),
                         radius: 60,
                       ),
@@ -170,10 +166,14 @@ class _EditStudentState extends State<EditStudent> {
       age: _ageController.text,
       phone: _phoneNumberController.text,
       domain: _domainNameController.text,
-      photo: widget.image,
+      photo: image,
+      id: id.toString(),
     );
-    // editList(widget.index, studentmodel);
-    Navigator.of(context).pop();
+    Provider.of<DbFunctionProvider>(ctx, listen: false)
+        .editList(index, studentmodel);
+    Provider.of<ProviderSearch>(ctx, listen: false).getAllStudents();
+
+    Navigator.of(ctx).pop();
   }
 
   Future<void> getPhoto() async {
@@ -182,11 +182,8 @@ class _EditStudentState extends State<EditStudent> {
       return;
     } else {
       final photoTemp = File(photo.path);
-      setState(
-        () {
-          widget.image = photoTemp.path;
-        },
-      );
+
+      image = photoTemp.path;
     }
   }
 }

@@ -1,19 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:student_db/provider/provider_search.dart';
 import 'package:student_db/screens/home/widgets/add_student.dart';
 import 'package:student_db/screens/home/widgets/list_student.dart';
-import 'package:student_db/screens/home/widgets/search_student.dart';
+// import 'package:student_db/screens/home/widgets/search_student.dart';
 
-import '../../db/functions/db_functions.dart';
+// import '../../db/functions/db_functions.dart';
 
 class ScreenHome extends StatelessWidget {
-  const ScreenHome({Key? key}) : super(key: key);
+  ScreenHome({
+    Key? key,
+  }) : super(key: key);
+  final searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    
-    Provider.of<DbFunctionProvider>(context, listen: false).getAllStudents();
-    // getAllStudents();
+    log('called');
+    Provider.of<ProviderSearch>(context, listen: false).getAllStudents();
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -23,13 +29,6 @@ class ScreenHome extends StatelessWidget {
               style: TextStyle(color: Colors.white),
             ),
           ),
-          actions: [
-            // IconButton(
-            //     onPressed: () {
-            //       showSearch(context: context, delegate: Search());
-            //     },
-            //     icon: const Icon(Icons.search))
-          ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
@@ -41,16 +40,46 @@ class ScreenHome extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) =>  AddStudent(),
+                  builder: (context) => AddStudent(),
                 ),
               );
             },
           ),
         ),
-        body: const Padding(
-          padding: EdgeInsets.only(top: 10),
-        
-          child: ListStudent(),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Consumer(
+            builder:
+                (BuildContext context, ProviderSearch value, Widget? child) {
+              return Column(
+                children: [
+                  TextField(
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                          hintText: 'Search',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
+                          )),
+                      onChanged: (value) {
+                        Provider.of<ProviderSearch>(context, listen: false)
+                            .runFilter(value);
+                        log('serached');
+                      }),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: ListStudent(
+                      controller: searchController,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

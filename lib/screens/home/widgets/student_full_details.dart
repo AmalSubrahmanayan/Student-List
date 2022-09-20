@@ -11,6 +11,7 @@ class FullDetails extends StatelessWidget {
     required this.domain,
     required this.photo,
     required this.index,
+    required this.id,
   }) : super(
           key: key,
         );
@@ -20,6 +21,7 @@ class FullDetails extends StatelessWidget {
   final String domain;
   final String photo;
   final int index;
+  final String? id;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class FullDetails extends StatelessWidget {
                         name: name,
                         phone: phone,
                         image: photo,
+                        id: id.toString(),
                       )),
             );
           },

@@ -2,25 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/provider/provider_Delete.dart';
+import 'package:student_db/provider/provider_search.dart';
 import 'package:student_db/screens/home/widgets/student_full_details.dart';
 
 class ListStudent extends StatelessWidget {
-  const ListStudent({Key? key}) : super(key: key);
-
-
-
+  const ListStudent({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<DbFunctionProvider>(context, listen: false).getAllStudents();
+    // Provider.of<DbFunctionProvider>(context, listen: false).getAllStudents();
 
-    return Consumer<DbFunctionProvider>(
+    return Consumer<ProviderSearch>(
       builder: (BuildContext ctx, studentList, Widget? child) {
         return ListView.separated(
           itemBuilder: ((ctx, index) {
-            final data = studentList.studentList[index];
+            final data = studentList.foundStudent[index];
             return ListTile(
               leading: CircleAvatar(
                 radius: 30,
@@ -31,9 +32,8 @@ class ListStudent extends StatelessWidget {
               title: Text(data.name),
               trailing: IconButton(
                 onPressed: () {
-                
-                   ProviderDelete.deleteItem (context, index);
-                    
+                  ProviderDelete.deleteItem(context, data.id.toString());
+                  Provider.of<ProviderSearch>(context,listen: false).runFilter(controller.text);
                 },
                 icon: Icon(
                   Icons.delete_forever,
@@ -44,12 +44,14 @@ class ListStudent extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: ((context) => FullDetails(
-                        name: data.name,
-                        age: data.age,
-                        phone: data.phone,
-                        domain: data.domain,
-                        photo: data.photo,
-                        index: index)),
+                          name: data.name,
+                          age: data.age,
+                          phone: data.phone,
+                          domain: data.domain,
+                          photo: data.photo,
+                          index: index,
+                          id: data.id,
+                        )),
                   ),
                 );
               },
@@ -58,7 +60,7 @@ class ListStudent extends StatelessWidget {
           separatorBuilder: (ctx, index) {
             return const Divider();
           },
-          itemCount: studentList.studentList.length,
+          itemCount: studentList.foundStudent.length,
         );
       },
     );

@@ -18,7 +18,7 @@ class StudentModelAdapter extends TypeAdapter<StudentModel> {
     };
     return StudentModel(
       name: fields[1] as String,
-      id: fields[0] as int?,
+      id: fields[0] as String?,
       age: fields[2] as String,
       phone: fields[3] as String,
       domain: fields[4] as String,

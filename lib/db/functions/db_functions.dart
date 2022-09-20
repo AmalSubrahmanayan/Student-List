@@ -5,14 +5,12 @@ import 'package:student_db/db/model/data_model.dart';
 // ValueNotifier<List<StudentModel>> studentListNotifier = ValueNotifier([]);
 
 class DbFunctionProvider with ChangeNotifier {
-  List<StudentModel> studentList = [];
+  static List<StudentModel> studentList = [];
 
   void addStudent(StudentModel value) async {
     final studentDatabase = await Hive.openBox<StudentModel>('student_db');
-    final id = await studentDatabase.add(value);
-    value.id = id;
+    await studentDatabase.put(value.id, value);
     studentList.add(value);
-
     getAllStudents();
     notifyListeners();
   }
@@ -24,9 +22,9 @@ class DbFunctionProvider with ChangeNotifier {
     return studentList;
   }
 
-  Future<void> deleteStudent(int id) async {
+  Future<void> deleteStudent(String id) async {
     final studentDatabase = await Hive.openBox<StudentModel>('student_db');
-    await studentDatabase.deleteAt(id);
+    await studentDatabase.delete(id);
     getAllStudents();
     notifyListeners();
   }
