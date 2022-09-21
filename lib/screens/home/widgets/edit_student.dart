@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_db/db/functions/db_functions.dart';
 import 'package:student_db/db/model/data_model.dart';
+import 'package:student_db/provider/provider_image.dart';
 import 'package:student_db/provider/provider_search.dart';
 
 class EditStudent extends StatelessWidget {
@@ -69,7 +70,7 @@ class EditStudent extends StatelessWidget {
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          getPhoto();
+                          Provider.of<ProviderImage>(context,listen: false).getPhoto();
                         },
                         icon: const Icon(Icons.image_outlined),
                         label: const Text('Add An Image'),
@@ -176,14 +177,5 @@ class EditStudent extends StatelessWidget {
     Navigator.of(ctx).pop();
   }
 
-  Future<void> getPhoto() async {
-    final photo = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (photo == null) {
-      return;
-    } else {
-      final photoTemp = File(photo.path);
-
-      image = photoTemp.path;
-    }
-  }
+  
 }

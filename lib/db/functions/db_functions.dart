@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:student_db/db/model/data_model.dart';
 
-// ValueNotifier<List<StudentModel>> studentListNotifier = ValueNotifier([]);
-
 class DbFunctionProvider with ChangeNotifier {
   static List<StudentModel> studentList = [];
 
@@ -19,6 +17,7 @@ class DbFunctionProvider with ChangeNotifier {
     final studentDatabase = await Hive.openBox<StudentModel>('student_db');
     studentList.clear();
     studentList.addAll(studentDatabase.values);
+    notifyListeners();
     return studentList;
   }
 
@@ -33,10 +32,6 @@ class DbFunctionProvider with ChangeNotifier {
     final studentDatabase = await Hive.openBox<StudentModel>('student_db');
     await studentDatabase.putAt(id, value);
     getAllStudents();
+    notifyListeners();
   }
-
-// Future<void> searching() async {
-//   final studentDatabase = await Hive.openBox<StudentModel>('student_db');
-// }
-
 }

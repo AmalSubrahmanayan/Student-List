@@ -1,13 +1,12 @@
-// import 'dart:ffi';
 
-// import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_db/db/functions/db_functions.dart';
+import 'package:student_db/provider/provider_search.dart';
 
 class ProviderDelete {
-  static deleteItem(BuildContext context, String index) async {
+  static deleteItem(BuildContext context, String id) async {
     showDialog(
         context: context,
         builder: (ctx) {
@@ -22,7 +21,9 @@ class ProviderDelete {
               TextButton(
                   onPressed: () {
                     Provider.of<DbFunctionProvider>(context, listen: false)
-                        .deleteStudent(index);
+                        .deleteStudent(id.toString());
+                     Provider.of<ProviderSearch>(context, listen: false)
+                        .getAllStudents();    
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Successfully deleted'),
                       duration: Duration(seconds: 2),

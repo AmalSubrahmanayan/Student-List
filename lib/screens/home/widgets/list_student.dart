@@ -33,7 +33,7 @@ class ListStudent extends StatelessWidget {
               trailing: IconButton(
                 onPressed: () {
                   ProviderDelete.deleteItem(context, data.id.toString());
-                  Provider.of<ProviderSearch>(context,listen: false).runFilter(controller.text);
+                  // Provider.of<ProviderSearch>(context,listen: false).runFilter(controller.text);
                 },
                 icon: Icon(
                   Icons.delete_forever,

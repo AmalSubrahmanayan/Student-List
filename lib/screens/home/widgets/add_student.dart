@@ -19,7 +19,7 @@ class AddStudent extends StatelessWidget {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _domainNameController = TextEditingController();
-  bool imageAlert = false;
+  // bool imageAlert = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -168,7 +168,7 @@ class AddStudent extends StatelessWidget {
                             .getAllStudents();
                       } else {
                         print('e');
-                        imageAlert = true;
+                        // imageAlert = true;
                       }
                     },
                     icon: const Icon(Icons.save),
@@ -212,15 +212,15 @@ class AddStudent extends StatelessWidget {
     log('ook');
   }
 
-  File? photo;
-  Future<void> getPhoto() async {
-    final pic = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pic == null) {
-      return;
-    } else {
-      final photoTemp = File(pic.path);
+  // File? photo;
+  // Future<void> getPhoto() async {
+  //   final pic = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (pic == null) {
+  //     return;
+  //   } else {
+  //     final photoTemp = File(pic.path);
 
-      photo = photoTemp;
-    }
-  }
+  //     photo = photoTemp;
+  //   }
+  // }
 }

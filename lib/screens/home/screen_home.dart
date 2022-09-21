@@ -53,21 +53,24 @@ class ScreenHome extends StatelessWidget {
                 (BuildContext context, ProviderSearch value, Widget? child) {
               return Column(
                 children: [
-                  TextField(
-                      controller: searchController,
-                      decoration: const InputDecoration(
-                          hintText: 'Search',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5.0),
-                            ),
-                          )),
-                      onChanged: (value) {
-                        Provider.of<ProviderSearch>(context, listen: false)
-                            .runFilter(value);
-                        log('serached');
-                      }),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                        controller: searchController,
+                        decoration: const InputDecoration(
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            )),
+                        onChanged: (value) {
+                          Provider.of<ProviderSearch>(context, listen: false)
+                              .runFilter(value);
+                          log('serached');
+                        }),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
